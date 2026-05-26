@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Jobs - HireHub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Available Jobs</h1>
+        <p class="text-gray-500 mt-2">
+            Find your next opportunity
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for job in page_obj %}
+        <div class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition">
+
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">
+                        {{ job.title }}
+                    </h2>
+
+                    <p class="text-gray-500 text-sm">
+                        {{ job.company.name }}
+                    </p>
+                </div>
+
+                {% if job.is_featured %}
+                <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full">
+                    Featured
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 text-sm text-gray-600">
+                <p>📍 {{ job.location }}</p>
+                <p>💼 {{ job.get_job_type_display }}</p>
+                <p>🏠 {{ job.get_work_mode_display }}</p>
+                <p>💰 {{ job.salary_range }}</p>
+            </div>
+
+            <a href="{% url 'job-detail' job.slug %}"
+                class="mt-5 inline-block w-full text-center bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition">
+                View Details
+            </a>
+
+        </div>
+        {% empty %}
+        <div class="col-span-3 text-center text-gray-500 py-20">
+            No jobs available.
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

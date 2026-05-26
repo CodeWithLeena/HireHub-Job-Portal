@@ -1,0 +1,28 @@
+# Virtual Environment
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3
+
+# Environment Variables
+.env
+
+# VS Code settings
+.vscode/
+
+# macOS files
+.DS_Store
+
+# Media files
+media/
+
+# Static collected files
+staticfiles/
+
+# Logs
+*.log

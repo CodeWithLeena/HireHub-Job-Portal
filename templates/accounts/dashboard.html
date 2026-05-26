@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% block title %}Dashboard - HireHub{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">👋 Welcome, {{ user.first_name }}!</h1>
+        <p class="text-gray-500 mt-1">
+            {% if user.is_jobseeker %}Your job seeking dashboard
+            {% elif user.is_employer %}Manage your company and jobs
+            {% else %}Admin Dashboard
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- ===================== JOB SEEKER DASHBOARD ===================== -->
+    {% if user.is_jobseeker %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <div class="text-3xl font-bold text-blue-600">{{ total_applications }}</div>
+            <div class="text-sm text-gray-500 mt-1">Total Applications</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <a href="{% url 'job-list' %}" class="block">
+                <div class="text-3xl font-bold text-green-600">Browse</div>
+                <div class="text-sm text-gray-500 mt-1">Find New Jobs →</div>
+            </a>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <a href="{% url 'edit-profile' %}" class="block">
+                <div class="text-3xl font-bold text-purple-600">Profile</div>
+                <div class="text-sm text-gray-500 mt-1">Update Resume →</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Applications</h2>
+        {% if applications %}
+        <div class="space-y-3">
+            {% for app in applications %}
+            <a href="{% url 'application-detail' app.pk %}" class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors group">
+                <div class="flex items-center gap-3">
+                    {% if app.job.company.logo %}
+                        <img src="{{ app.job.company.logo.url }}" class="w-10 h-10 rounded-lg object-cover">
+                    {% else %}
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <span class="text-blue-600 font-bold text-sm">{{ app.job.company.name|first }}</span>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <div class="font-medium text-gray-900 group-hover:text-blue-600">{{ app.job.title }}</div>
+                        <div class="text-sm text-gray-500">{{ app.job.company.name }} · {{ app.applied_at|date:"d M Y" }}</div>
+                    </div>
+                </div>
+                <span class="text-xs font-medium px-3 py-1 rounded-full badge-{{ app.status }}">
+                    {{ app.get_status_display }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="mt-4 text-center">
+            <a href="{% url 'my-applications' %}" class="text-blue-600 text-sm font-medium hover:underline">View all applications →</a>
+        </div>
+        {% else %}
+        <div class="text-center py-10">
+            <div class="text-4xl mb-3">📋</div>
+            <p class="text-gray-500 mb-4">No applications yet</p>
+            <a href="{% url 'job-list' %}" class="inline-block bg-blue-600 text-white font-medium px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors">
+                Browse Jobs
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ===================== EMPLOYER DASHBOARD ===================== -->
+    {% elif user.is_employer %}
+    {% if no_company %}
+    <div class="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+        <div class="text-5xl mb-4">🏢</div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Register Your Company</h3>
+        <p class="text-gray-500 mb-6">Set up your company profile to start posting jobs</p>
+        <a href="{% url 'register-company' %}" class="inline-block bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors">
+            Register Company →
+        </a>
+    </div>
+    {% elif company %}
+        {% if not company.is_approved %}
+        <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 mb-6">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">⏳</span>
+                <div>
+                    <h3 class="font-semibold text-yellow-900">Company Pending Approval</h3>
+                    <p class="text-yellow-700 text-sm mt-1">Your company "{{ company.name }}" is under review by our admin team.</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl border border-gray-200 p-6">
+                <div class="text-3xl font-bold text-blue-600">{{ total_jobs }}</div>
+                <div class="text-sm text-gray-500 mt-1">Active Jobs</div>
+            </div>
+            <div class="bg-white rounded-2xl border border-gray-200 p-6">
+                <div class="text-3xl font-bold text-green-600">{{ total_applications }}</div>
+                <div class="text-sm text-gray-500 mt-1">Total Applicants</div>
+            </div>
+            <div class="bg-white rounded-2xl border border-gray-200 p-6 col-span-2">
+                <a href="{% url 'post-job' %}" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                        <span class="text-2xl group-hover:scale-110 transition-transform">+</span>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-gray-900">Post a New Job</div>
+                        <div class="text-sm text-gray-500">Find the right candidate</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        {% if recent_applications %}
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Applications</h2>
+            <div class="space-y-3">
+                {% for app in recent_applications %}
+                <a href="{% url 'company-applicants' app.job.id %}" class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
+                    <div>
+                        <div class="font-medium text-gray-900">{{ app.applicant.get_full_name }}</div>
+                        <div class="text-sm text-gray-500">{{ app.job.title }} · {{ app.applied_at|timesince }} ago</div>
+                    </div>
+                    <span class="text-xs font-medium px-3 py-1 rounded-full badge-{{ app.status }}">{{ app.get_status_display }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
