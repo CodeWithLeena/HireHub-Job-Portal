@@ -1,3 +1,4 @@
+
 # 🎯 HireHub - Django Job Portal System
 
 A full-featured job portal built with Django + Django REST Framework.
@@ -280,3 +281,7 @@ Job                    Application            ApplicationStatusHistory
 ---
 
 Built with ❤️ using Django + DRF | HireHub v1.0
+=======
+# HireHub-Job-Portal
+Full-stack Django job portal with JWT auth, PostgreSQL, REST APIs, company dashboards, and application tracking.
+
