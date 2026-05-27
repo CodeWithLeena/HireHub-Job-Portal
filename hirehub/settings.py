@@ -1,17 +1,24 @@
 """
-HireHub Django Job Portal - Settings
+HireHub Django Job Portal - Settings (Python + Django Templates Only)
 """
 from pathlib import Path
 from datetime import timedelta
-import os
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# =====================
+# CORE SECURITY
+# =====================
+SECRET_KEY = config('SECRET_KEY')
 
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='127.0.0.1,localhost',
+    cast=lambda v: [i.strip() for i in v.split(',')]
+)
 
 # =====================
 # INSTALLED APPS
@@ -27,7 +34,6 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders',
 
     # Local apps
     'accounts',
@@ -36,10 +42,12 @@ INSTALLED_APPS = [
     'applications',
 ]
 
+# =====================
+# MIDDLEWARE
+# =====================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -49,6 +57,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'hirehub.urls'
 
+# =====================
+# TEMPLATES (PYTHON ONLY FRONTEND)
+# =====================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -68,30 +79,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'hirehub.wsgi.application'
 
 # =====================
-# DATABASE - PostgreSQL
+# DATABASE
 # =====================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
-
-# Fallback to SQLite for local dev (comment out PostgreSQL above)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 # =====================
-# CUSTOM AUTH USER
+# AUTH
 # =====================
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -103,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # =====================
-# REST FRAMEWORK
+# DRF (KEEP FOR FUTURE API + INTERVIEW VALUE)
 # =====================
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -115,14 +117,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-    'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
-    ],
 }
 
 # =====================
-# JWT SETTINGS
+# JWT
 # =====================
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
@@ -133,33 +131,26 @@ SIMPLE_JWT = {
 }
 
 # =====================
-# CORS (for React frontend)
-# =====================
-CORS_ALLOW_ALL_ORIGINS = True  # Set specific origins in production
-
-# =====================
-# EMAIL CONFIG
+# EMAIL
 # =====================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'your@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS', 'yourpassword')
+
+EMAIL_HOST_USER = config('EMAIL_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASS')
 DEFAULT_FROM_EMAIL = 'HireHub <noreply@hirehub.com>'
 
-# For local dev: console backend
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # =====================
-# MEDIA & STATIC
+# STATIC & MEDIA
 # =====================
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # =====================
 # INTERNATIONALIZATION
@@ -171,7 +162,9 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Auth redirects
+# =====================
+# AUTH REDIRECTS
+# =====================
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
