@@ -82,11 +82,10 @@ WSGI_APPLICATION = 'hirehub.wsgi.application'
 # =====================
 # DATABASE
 # =====================
-import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL')
+        conn_max_age=600
     )
 }
 
