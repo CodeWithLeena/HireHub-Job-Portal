@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'hirehub.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
+        default='sqlite:///db.sqlite3',
         conn_max_age=600
     )
 }
