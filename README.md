@@ -288,12 +288,17 @@ Job                    Application            ApplicationStatusHistory
 ### Homepage
 ![Homepage](screenshots/home.png)
 
-### Jobs Page
-![Jobs](screenshots/jobs.png)
-
 ### Dashboard
 ![Dashboard](screenshots/dashboard.png)
 
+### Jobs Page
+![Jobs](screenshots/jobs.png)
+
+### CreateAccount
+![CreateAccount](screenshots/createaccount.png)
+
+### Company Page
+![Company](screenshots/companies.png)
 
 
 ---
