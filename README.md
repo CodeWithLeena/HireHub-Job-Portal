@@ -1,5 +1,8 @@
+## 🎯 HireHub - Django Job Portal System
 
-# 🎯 HireHub - Django Job Portal System
+## 🌐 Live Demo
+- Live Website: https://hirehub-job-portal-7.onrender.com
+- GitHub Repository: https://github.com/CodeWithLeena/HireHub-Job-Portal
 
 A full-featured job portal built with Django + Django REST Framework.
 Companies post jobs, seekers apply, admin controls everything.
@@ -279,6 +282,23 @@ Job                    Application            ApplicationStatusHistory
 3. Set `EMAIL_HOST_PASSWORD` to the 16-char app password
 
 ---
+
+## 📸 Screenshots
+
+### Homepage
+![Homepage](screenshots/home.png)
+
+### Jobs Page
+![Jobs](screenshots/jobs.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+
+
+---
+
+
 
 Built with ❤️ using Django + DRF | HireHub v1.0
 =======
